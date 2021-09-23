@@ -33,8 +33,10 @@ app.use(methodOverride('_method'))
 // uncomment after placing your favicon in /public
 //app.use(favicon(path.join(__dirname, 'public', 'favicon.ico')));
 app.use(logger('dev'));
+// deprecated declarations, will be removed later?
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
+//creates http cookies
 app.use(cookieParser());
 
 
