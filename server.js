@@ -10,6 +10,8 @@ const logger = require('morgan');
 const cookieParser = require('cookie-parser');
 const bodyParser = require('body-parser');
 const methodOverride = require('method-override')
+const nodemailer = require('nodemailer');
+const mg = require('nodemailer-mailgun-transport');
 
 const app = express();
 
@@ -19,6 +21,38 @@ mongoose.connect('mongodb://localhost/local', {
   useUnifiedTopology: true,
   useCreateIndex: true,
   useFindAndModify: false
+});
+// auth with our mailgun API key and domain
+const auth = {
+  auth: {
+    api_key: process.env.MAILGUN_API_KEY,
+    domain: process.env.EMAIL_DOMAIN
+  }
+}
+
+
+const nodemailerMailgun = nodemailer.createTransport(mg(auth));
+
+// SEND EMAIL
+const user = {
+  email: 'sergiorq12016@gmail.com',
+  name: 'Emily',
+  age: '43'
+};
+
+nodemailerMailgun.sendMail({
+  from: 'no-reply@example.com',
+  to: user.email, // An array if you have multiple recipients.
+  subject: 'Hey you, awesome!',
+  template: {
+    name: 'email.handlebars',
+    engine: 'handlebars',
+    context: user
+  }
+}).then(info => {
+  console.log('Response: ' + info);
+}).catch(err => {
+  console.log('Error: ' + err);
 });
 
 // view engine setup
